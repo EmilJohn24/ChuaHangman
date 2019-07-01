@@ -1,5 +1,7 @@
 import acm.program.*;
 import acm.util.*;
+
+import java.applet.AudioClip;
 import java.io.*;    // for File
 import java.util.*;  // for Scanner
 public class hangman extends ConsoleProgram {
@@ -26,6 +28,7 @@ public class hangman extends ConsoleProgram {
 
     // TODO: comment this method
     private void intro() {
+        playAudio("start.wav");
         String border = "@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
         int indentation = 20;
         printRelativeCenter(border, border.length(), indentation);
@@ -36,6 +39,8 @@ public class hangman extends ConsoleProgram {
         printRelativeCenter("that isn't in my word, a new body", border.length(), indentation);
         printRelativeCenter("part of the hanging man appears.", border.length(), indentation);
         printRelativeCenter("Good luck!", border.length(), indentation);
+        printRelativeCenter(border, border.length(), indentation);
+
     }
 
 
@@ -51,13 +56,18 @@ public class hangman extends ConsoleProgram {
             displayHangman(lives);
             newGuess = readGuess(guessedLetters);
             guessedLetters += newGuess;
-            if (secretWord.indexOf(newGuess) == -1)
+            if (secretWord.indexOf(newGuess) == -1) {
                 lives--;
+                playAudio("wrong.wav");
+            }
             else if (hasWon(secretWord, guessedLetters)) {
                 victorySequence(secretWord);
                 return lives;
             }
-            else println("Correct!");
+            else {
+                println("Correct!");
+                playAudio("correct.wav");
+            }
             printHint(secretWord, guessedLetters);
         }
 
@@ -76,10 +86,12 @@ public class hangman extends ConsoleProgram {
     }
 
     private void victorySequence(String secretWord){
+        playAudio("victory.wav");
         println("You win! My word was " + secretWord);
     }
 
     private void gameOverSequence(String secretWord){
+        playAudio("defeat.wav");
         println("You lose. My word was " + secretWord);
     }
     private boolean hasWon(String secretWord, String guessedLetters){
@@ -122,12 +134,17 @@ public class hangman extends ConsoleProgram {
 
     }
 
+    private void playAudio(String filename){
+        AudioClip hornClip = MediaTools.loadAudioClip("assets/" + filename);
+        hornClip.play();
+    }
+
     // TODO: comment this method
     private void displayHangman(int guessCount) {
         // TODO: write this method
 
         try (BufferedReader br = new BufferedReader(new FileReader(
-                "assets/display" + String.valueOf(guessCount) + ".txt"))) {
+                "assets/display" + guessCount + ".txt"))) {
             String line = null;
             while ((line = br.readLine()) != null) {
                canvas.printText(line);
