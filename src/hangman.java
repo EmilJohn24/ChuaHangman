@@ -11,8 +11,9 @@ public class hangman extends ConsoleProgram {
         int gamesCount = 0, gamesWon = 0, best = 0;
         int previousGuessCount;
         intro();
-        String secretWord = getRandomWord("assets/large.txt");
+        String secretWord;
         do {
+            secretWord = getRandomWord("assets/large.txt");
             previousGuessCount = playOneGame(secretWord);
             gamesCount += 1;
             if (previousGuessCount > 0){
@@ -181,7 +182,7 @@ public class hangman extends ConsoleProgram {
         // TODO: write this method
         String border = "@@@@@@@@@@@@@@@@@@@@@@@@@@@@";
         int indentation = 20;
-        String winPercent = (gamesWon / gamesCount) * 100 + "%";
+        String winPercent = ((double) gamesWon / gamesCount) * 100 + "%";
         printRelativeCenter(border, border.length(), indentation);
         printRelativeCenter("Overall statistics", border.length(), indentation);
         printRelativeCenter("Games played: " + gamesCount, border.length(), indentation);
